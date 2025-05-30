@@ -23,3 +23,17 @@
     i2cdetect -y 1
     ```
     Running the i2c detection command above should show all connected I2C devices and their addresses. The PCA9685 should show up as 0x40 (default) or 0x41, etc varying depending on if the address was changed.
+  4. Install PCA9685 driver for Pi (instructions excerpt from [here](https://github.com/barulicm/PiPCA9685/blob/main/README.md))
+      - Clone the repo
+      ```
+      git clone https://github.com/barulicm/PiPCA9685.git
+      ```
+      - Install the driver's dependencies
+      ```
+      cd PiPCA9685
+      xargs -a apt_dependencies.txt sudo apt-get install -y
+      ```
+      - Build and install the library
+      ```
+      sudo cmake --workflow --preset install
+      ```
