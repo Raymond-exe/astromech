@@ -2,8 +2,9 @@
 
 cd "$(dirname "$0")"
 
-echo "[run.sh] Pulling updates from https://github.com/Raymond-exe/astromech/..."
-git pull
+echo "[run.sh] Checking for updates from remote repo..."
+git fetch --all
+git reset --hard origin/main
 
 echo "[run.sh] Cleaning ./out/ directory..."
 rm -rf out/*
