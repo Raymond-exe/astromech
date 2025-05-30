@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 
 echo "[run.sh] Checking for updates from remote repo..."
 git fetch --all
-git reset --hard origin/main
+git reset --hard origin/master
 
 echo "[run.sh] Cleaning ./out/ directory..."
 rm -rf out/*
