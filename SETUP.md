@@ -1,7 +1,17 @@
 # Astromech
 
 ## OS Setup
+
+**Recommended OS:** *Raspberry Pi OS Lite (64-bit)*
+
+You can use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to setup an SD card for this project, just make sure to select your Pi model and the 64-bit Lite OS, or another OS of your prefer.
+
 1. Raspberry Pi OS updates:
+    We'll start with updating your Raspberry Pi's firmware:
+    ```
+    sudo rpi-update
+    ```
+    After that's complete, make sure to reboot before running the commands below.
     ```
     sudo apt update
     sudo apt upgrade
@@ -10,6 +20,14 @@
     ```
     sudo apt install git
     ```
+3. (TODO: write step 3)
+4. Download & install gStreamer (instructions excerpt from [here](https://platypus-boats.readthedocs.io/en/latest/source/rpi/video/video-streaming-gstreamer.html#getting-gstreamer)):
+    ```
+    sudo add-apt-repository ppa:gstreamer-developers/ppa
+    sudo apt-get update
+    sudo apt-get install gstreamer1.0*
+    ```
+
 3. Install WM8960 driver (instrutions excerpt from [here](https://github.com/waveshareteam/WM8960-Audio-HAT))  
   I cloned this repo into a new folder, but where you place it is up to you.
     ```
