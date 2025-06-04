@@ -1,4 +1,4 @@
-from flask import Flask, Response, request
+from flask import Flask, Response, request, jsonify
 import io
 from picamera2 import Picamera2
 from PIL import Image
@@ -12,37 +12,49 @@ app = Flask(__name__)
 
 wifi_device = "wlan0"
 
-camera = None # initialized in init_camera()
-frame_buffer = None # Background camera thread to transfer frames
 
-# Initialize camera
-def init_camera():
-    global camera
-    # print("Initializing Picamera2()...")
-    camera = Picamera2()
-    camera.configure(camera.create_video_configuration(main={"size": (640, 480)}))
-    camera.start()
-    # print("Camera initialized successfully!")
 
-video_thread = Thread(target=init_camera)
-video_thread.start()
+# # # # # # # # # # # # # # # # # # # # #
+#         DROID CONTROL WEBPAGE         #
+# # # # # # # # # # # # # # # # # # # # #
 
-def capture_frames():
-    global frame_buffer, camera
-    while (True):
-        if (camera is not None):
-            frame = camera.capture_array()
-            img = Image.fromarray(frame).convert("RGB")
-            buf = io.BytesIO()
-            img.save(buf, format='JPEG')
-            frame_buffer = buf.getvalue()
-        time.sleep(0.05)  # ~20 FPS
+@app.route('/control')
+def webpg_control():
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Droid Control</title>
+        <link rel="stylesheet" type="text/css" href="/static/control.css">
+    </head>
+    <body>
+        <img id="video-background" src="/video"/>
 
-frame_thread = Thread(target=capture_frames, daemon=True)
-frame_thread.start()
+        <div id="left-touch" class="control-area"></div>
+        <div id="right-touch" class="control-area"></div>
+        <script src="/static/control.js"></script>
+    </body>
+    </html>
+    """
+
+@app.route('/touch', methods=['POST'])
+def handle_touch():
+    data = request.get_json()
+    zone = data.get('zone')
+    x = data.get('x')
+    y = data.get('y')
+    print(f"Touch in {zone} zone: x={x:.2f}, y={y:.2f}")
+    # TODO use touch data for controls
+    return jsonify(status="ok")
+
+
+
+# # # # # # # # # # # # # # # # # # # #
+#         WIFI CONFIG WEBPAGE         #
+# # # # # # # # # # # # # # # # # # # #
 
 @app.route('/wifi')
-def wifi():
+def webpg_wifi():
     result = subprocess.check_output(["nmcli", "--colors", "no", "-m", "multiline", "--get-value", "SSID", "dev", "wifi", "list", "ifname", wifi_device])
     ssids_list = result.decode().split('\n')
     dropdowndisplay = f"""
@@ -92,8 +104,42 @@ def submit():
             return "Success: <i>%s</i>" % result.stdout.decode()
         return "Error: failed to connect."
 
+
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+#         VIDEO STREAM INIT + WEBPAGE         #
+# # # # # # # # # # # # # # # # # # # # # # # #
+
+camera = None # initialized in init_camera()
+frame_buffer = None # Background camera thread to transfer frames
+
+# Initialize camera
+def init_camera():
+    global camera
+    # print("Initializing Picamera2()...")
+    camera = Picamera2()
+    camera.configure(camera.create_video_configuration(main={"size": (640, 480)}))
+    camera.start()
+    # print("Camera initialized successfully!")
+
+def capture_frames():
+    global frame_buffer, camera
+    while (True):
+        if (camera is not None):
+            frame = camera.capture_array()
+            img = Image.fromarray(frame).convert("RGB")
+            buf = io.BytesIO()
+            img.save(buf, format='JPEG')
+            frame_buffer = buf.getvalue()
+        time.sleep(0.05)  # ~20 FPS
+
+video_thread = Thread(target=init_camera)
+video_thread.start()
+frame_thread = Thread(target=capture_frames, daemon=True)
+frame_thread.start()
+
 @app.route('/video')
-def video():
+def webpg_video():
     return Response(generate_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def generate_stream():
