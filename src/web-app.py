@@ -1,9 +1,39 @@
-from flask import Flask,request
+from flask import Flask, Response, request
+import io
+from picamera2 import Picamera2
+from PIL import Image
 import subprocess
+import time
+from threading import Thread
+
+# From tutorial: https://www.raspberrypi.com/tutorials/host-a-hotel-wifi-hotspot/
 
 app = Flask(__name__)
 
 wifi_device = "wlan0"
+
+# Initialize camera
+print("Initializing PiCamera2()...")
+picam2 = Picamera2()
+picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+picam2.start()
+print("Camera initialized successfully!")
+
+# Background camera thread to keep grabbing frames
+frame_buffer = None
+
+def capture_frames():
+    global frame_buffer
+    while True:
+        frame = picam2.capture_array()
+        img = Image.fromarray(frame).convert("RGB")
+        buf = io.BytesIO()
+        img.save(buf, format='JPEG')
+        frame_buffer = buf.getvalue()
+        time.sleep(0.05)  # ~20 FPS
+
+frame_thread = Thread(target=capture_frames, daemon=True)
+frame_thread.start()
 
 @app.route('/wifi')
 def wifi():
@@ -39,8 +69,7 @@ def wifi():
         """
     return dropdowndisplay
 
-
-@app.route('/submit',methods=['POST'])
+@app.route('/submit', methods=['POST'])
 def submit():
     if request.method == 'POST':
         print(*list(request.form.keys()), sep = ", ")
@@ -57,6 +86,17 @@ def submit():
             return "Success: <i>%s</i>" % result.stdout.decode()
         return "Error: failed to connect."
 
+@app.route('/video')
+def video():
+    return Response(generate_stream(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+def generate_stream():
+    while True:
+        if frame_buffer is not None:
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' +
+                   frame_buffer + b'\r\n')
+        time.sleep(0.05)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=80)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
