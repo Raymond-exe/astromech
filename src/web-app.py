@@ -6,30 +6,36 @@ import subprocess
 import time
 from threading import Thread
 
-# From tutorial: https://www.raspberrypi.com/tutorials/host-a-hotel-wifi-hotspot/
+# Modified from tutorial: https://www.raspberrypi.com/tutorials/host-a-hotel-wifi-hotspot/
 
 app = Flask(__name__)
 
 wifi_device = "wlan0"
 
-# Initialize camera
-print("Initializing PiCamera2()...")
-picam2 = Picamera2()
-picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-picam2.start()
-print("Camera initialized successfully!")
+camera = None # initialized in init_camera()
+frame_buffer = None # Background camera thread to transfer frames
 
-# Background camera thread to keep grabbing frames
-frame_buffer = None
+# Initialize camera
+def init_camera():
+    global camera
+    # print("Initializing Picamera2()...")
+    camera = Picamera2()
+    camera.configure(camera.create_video_configuration(main={"size": (640, 480)}))
+    camera.start()
+    # print("Camera initialized successfully!")
+
+video_thread = Thread(target=init_camera)
+video_thread.start()
 
 def capture_frames():
-    global frame_buffer
-    while True:
-        frame = picam2.capture_array()
-        img = Image.fromarray(frame).convert("RGB")
-        buf = io.BytesIO()
-        img.save(buf, format='JPEG')
-        frame_buffer = buf.getvalue()
+    global frame_buffer, camera
+    while (True):
+        if (camera is not None):
+            frame = camera.capture_array()
+            img = Image.fromarray(frame).convert("RGB")
+            buf = io.BytesIO()
+            img.save(buf, format='JPEG')
+            frame_buffer = buf.getvalue()
         time.sleep(0.05)  # ~20 FPS
 
 frame_thread = Thread(target=capture_frames, daemon=True)
