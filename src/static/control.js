@@ -30,7 +30,7 @@ function setupTouchLogging(id, zoneName) {
     }, { passive: false });
 }
 
-window.onload = function () {
-    setupTouchLogging("left-control", "left");
-    setupTouchLogging("right-control", "right");
+window.onload = () => {
+    setupTouchLogging("left-touch", "left");
+    setupTouchLogging("right-touch", "right");
 };
