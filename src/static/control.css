@@ -27,12 +27,12 @@ body, html {
 
 #left-touch {
     left: 20px;
-    width: 150px;
-    height: 150px;
+    width: min(50vw, 50vh);
+    height: min(50vw, 50vh);
 }
 
 #right-touch {
     right: 20px;
-    width: 200px;
-    height: 100px;
+    width: min(50vw, 50vh);
+    height: min(25vw, 25vh);
 }

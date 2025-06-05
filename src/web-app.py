@@ -34,9 +34,10 @@ pca.set_pwm_freq(SERVO_FREQ)
 ##################################
 
 
-# # # # # # # # # # # # # # # # # # # # # #
-#         DROID CONTROL + WEBPAGE         #
-# # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
+#         DROID SERVO CONTROL + WEBPAGE         #
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 @app.route('/control')
 def webpg_control():
@@ -71,7 +72,7 @@ def handle_touch():
         pca.set_pwm(RIGHT_SERVO, 0, pwmFrom(rightSpeed))
 
     if (zone == 'right'):
-        TODO = 'this'
+        pca.set_pwm(HEAD_SERVO, 0, pwmFrom(x))
 
     return jsonify(status="ok")
 
@@ -93,6 +94,8 @@ def motorTransferFunction(x, y):
     elif (absX >= absY):
         return -x + 1.5 * y
     return 0
+
+
 
 # # # # # # # # # # # # # # # # # # # #
 #         WIFI CONFIG WEBPAGE         #
