@@ -1,6 +1,7 @@
 from flask import Flask, Response, request, jsonify
 import io
 from picamera2 import Picamera2
+from libcamera import controls
 from PIL import Image
 import subprocess
 import time
@@ -120,6 +121,7 @@ def init_camera():
     camera = Picamera2()
     camera.configure(camera.create_video_configuration(main={"size": (640, 480)}))
     camera.start()
+    camera.set_controls({"AfMode": controls.AfModeEnum.Continuous})
     # print("Camera initialized successfully!")
 
 def capture_frames():
