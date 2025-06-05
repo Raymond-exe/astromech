@@ -47,7 +47,7 @@ def handle_touch():
     y = data.get('y')
 
     channel = 0 # TODO implement multi-servo control
-    with open(FIFO_PIPE, "wb") as fifo:
+    with open(FIFO_PIPE, "ab") as fifo:
         packed = struct.pack("ifi", channel, abs(y), 1 if y > 0 else -1)
         fifo.write(packed)
     return jsonify(status="ok")
