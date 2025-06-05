@@ -9,6 +9,7 @@ git reset --hard origin/master
 if [ ! -p /tmp/servo_ctrl ]; then
     echo "[run.sh] Creating FIFO pipe /tmp/servo_ctrl for servo control..."
     mkfifo /tmp/servo_ctrl
+    chmod 666 /tmp/servo_ctrl
 else
     echo "[run.sh] /tmp/servo_ctrl already exists."
 fi
