@@ -22,7 +22,7 @@ cmake --workflow --preset build
 
 if [ -x build/astromech-cpp ]; then
     echo "[run.sh] Succeeded compiling. Running program..."
-    ./build/astromech-cpp
+    ./build/astromech-cpp &
 else
     echo "[run.sh] Failed to compile servo control C++ file, aborting!"
     exit 1
