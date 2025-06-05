@@ -28,16 +28,20 @@ int main() {
     int direction;
     float speed;
 
-    while (
-        read(fifo, &channel, sizeof(channel)) > 0 &&
-        read(fifo, &direction, sizeof(direction)) > 0 && 
-        read(fifo, &speed, sizeof(speed)) > 0
-    ) {
-        printf("Servo %d assigned direction: %d, speed: %f\n", channel, direction, speed);
-        pca.set_pwm(channel, 0, pwmFrom(speed, direction));
+    while (true) {
+        if (read(fifo, &channel, sizeof(channel)) > 0 &&
+            read(fifo, &direction, sizeof(direction)) > 0 && 
+            read(fifo, &speed, sizeof(speed)) > 0
+        ) {
+            if (channel < 0) {
+                break;
+            }
+            printf("[main.cpp] [ch %d] speed: %f\n", channel, (speed * direction));
+            pca.set_pwm(channel, 0, pwmFrom(speed, direction));
+        } 
     }
 
-    printf("Closing servo controller.\n");
+    printf("[main.cpp] Exiting...\n");
     close(fifo);
     return 0;
 }
