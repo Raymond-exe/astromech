@@ -1,15 +1,19 @@
+#include <stdio.h>
+#include <fcntl.h>
 #include <unistd.h>
-#include <iostream>
 #include <cmath>
+#include <iostream>
 #include <PiPCA9685/PCA9685.h>
 
 #define NEUTRAL 450
 #define PWM_SCALE 400
 
+#define FIFO_PIPE "/tmp/servo_ctrl"
+
 int pwmFrom(float, int);
 
 int main() {
-    int fifo = open("/tmp/servo_ctrl", O_RDONLY);
+    int fifo = open(FIFO_PIPE, O_RDONLY);
     if (fifo == -1) {
         perror("open");
         return 1;

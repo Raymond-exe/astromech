@@ -3,6 +3,7 @@ import io
 from picamera2 import Picamera2
 from libcamera import controls
 from PIL import Image
+import struct
 import subprocess
 import time
 from threading import Thread
@@ -13,7 +14,7 @@ app = Flask(__name__)
 
 wifi_device = "wlan0"
 
-
+FIFO_PIPE = "/tmp/servo_ctrl"
 
 # # # # # # # # # # # # # # # # # # # # #
 #         DROID CONTROL WEBPAGE         #
@@ -44,7 +45,11 @@ def handle_touch():
     zone = data.get('zone')
     x = data.get('x')
     y = data.get('y')
-    # TODO use touch data for controls
+
+    channel = 0 # TODO implement multi-servo control
+    with open(FIFO_PIPE, "wb") as fifo:
+        packed = struct.pack("ifi", channel, abs(y), 1 if y > 0 else -1)
+        fifo.write(packed)
     return jsonify(status="ok")
 
 
