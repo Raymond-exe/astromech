@@ -13,9 +13,11 @@ from PiPCA9685 import PCA9685
 
 
 
-# # # # # # # # # # # # # # # # # # # # # # # #
-#         SERVO MOTOR CONFIG SETTINGS         #
-# # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # #
+#         CONFIG SETTINGS         #
+# # # # # # # # # # # # # # # # # #
+
+STREAM_RESOLUTION = (720, 540)
 
 SERVO_PWM_NEUTRAL = 450
 SERVO_PWM_SCALE = 350
@@ -166,7 +168,7 @@ def init_camera():
     global camera
     # print("Initializing Picamera2()...")
     camera = Picamera2()
-    camera.configure(camera.create_video_configuration(main={"size": (640, 480)}))
+    camera.configure(camera.create_video_configuration(main={"size": STREAM_RESOLUTION}))
     camera.start()
     # camera.set_controls({"AfMode": controls.AfModeEnum.Continuous})
     # print("Camera initialized successfully!")
