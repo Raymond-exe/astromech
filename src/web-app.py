@@ -7,18 +7,36 @@ import struct
 import subprocess
 import time
 from threading import Thread
+from PiPCA9685 import PCA9685
 
 # Modified from tutorial: https://www.raspberrypi.com/tutorials/host-a-hotel-wifi-hotspot/
 
-app = Flask(__name__)
 
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+#         SERVO MOTOR CONFIG SETTINGS         #
+# # # # # # # # # # # # # # # # # # # # # # # #
+
+SERVO_PWM_NEUTRAL = 450
+SERVO_PWM_SCALE = 350
+SERVO_FREQ = 60
+
+LEFT_SERVO = 0
+RIGHT_SERVO = 1
+HEAD_SERVO = 15
+
+########## DO NOT TOUCH ##########
+app = Flask(__name__)
 wifi_device = "wlan0"
 
-FIFO_PIPE = "/tmp/servo_ctrl"
+pca = PCA9685()
+pca.set_pwm_freq(SERVO_FREQ)
+##################################
 
-# # # # # # # # # # # # # # # # # # # # #
-#         DROID CONTROL WEBPAGE         #
-# # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # # # #
+#         DROID CONTROL + WEBPAGE         #
+# # # # # # # # # # # # # # # # # # # # # #
 
 @app.route('/control')
 def webpg_control():
@@ -46,12 +64,20 @@ def handle_touch():
     x = data.get('x')
     y = data.get('y')
 
-    channel = 0 # TODO implement multi-servo control
-    with open(FIFO_PIPE, "ab") as fifo:
-        packed = struct.pack("ifi", channel, abs(y), 1 if y > 0 else -1)
-        fifo.write(packed)
+    channel = 0
+    pca.set_pwm(channel, 0, pwmFrom(abs(y), 1 if y > 0 else -1))
+    # TODO implement actual servo controls
     return jsonify(status="ok")
 
+# speed: 0.0 -> 1.0, direction: -1 or +1
+def pwmFrom(speed, direction):
+    if (direction < -1): direction = -1
+    if (direction > +1): direction = +1
+
+    if (speed > 1.0): speed = 1.0
+    if (speed < 0.0): speed = 0.0
+
+    return round(speed * SERVO_PWM_SCALE * direction) + SERVO_PWM_NEUTRAL
 
 
 # # # # # # # # # # # # # # # # # # # #
