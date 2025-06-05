@@ -64,21 +64,35 @@ def handle_touch():
     x = data.get('x')
     y = data.get('y')
 
-    channel = 0
-    pca.set_pwm(channel, 0, pwmFrom(abs(y), 1 if y > 0 else -1))
-    # TODO implement actual servo controls
+    if (zone == 'left'):
+        leftSpeed = motorTransferFunction(x, y)
+        rightSpeed = motorTransferFunction(-x, y)
+        pca.set_pwm(LEFT_SERVO, 0, pwmFrom(leftSpeed))
+        pca.set_pwm(RIGHT_SERVO, 0, pwmFrom(rightSpeed))
+
+    if (zone == 'right'):
+        TODO = 'this'
+
     return jsonify(status="ok")
 
-# speed: 0.0 -> 1.0, direction: -1 or +1
-def pwmFrom(speed, direction):
-    if (direction < -1): direction = -1
-    if (direction > +1): direction = +1
+# speed: -1.0 -> 1.0
+def pwmFrom(speed):
+    if (speed > +1.0): speed = +1.0
+    if (speed < -1.0): speed = -1.0
+    return round(speed * SERVO_PWM_SCALE) + SERVO_PWM_NEUTRAL
 
-    if (speed > 1.0): speed = 1.0
-    if (speed < 0.0): speed = 0.0
-
-    return round(speed * SERVO_PWM_SCALE * direction) + SERVO_PWM_NEUTRAL
-
+# https://www.desmos.com/3d/ql8ob6axnw
+# converts X/Y coords to a speed from -1 -> 1
+def motorTransferFunction(x, y):
+    absX = abs(x)
+    absY = abs(y)
+    if (x * y <= 0):
+        return max(absX, absY) * (1 if y >= 0 else -1)
+    elif (absX <= absY):
+        return y - 0.5 * x
+    elif (absX >= absY):
+        return -x + 1.5 * y
+    return 0
 
 # # # # # # # # # # # # # # # # # # # #
 #         WIFI CONFIG WEBPAGE         #
