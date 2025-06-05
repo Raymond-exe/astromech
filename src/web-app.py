@@ -44,7 +44,6 @@ def handle_touch():
     zone = data.get('zone')
     x = data.get('x')
     y = data.get('y')
-    print(f"Touch in {zone} zone: x={x:.2f}, y={y:.2f}")
     # TODO use touch data for controls
     return jsonify(status="ok")
 
@@ -121,7 +120,7 @@ def init_camera():
     camera = Picamera2()
     camera.configure(camera.create_video_configuration(main={"size": (640, 480)}))
     camera.start()
-    camera.set_controls({"AfMode": controls.AfModeEnum.Continuous})
+    # camera.set_controls({"AfMode": controls.AfModeEnum.Continuous})
     # print("Camera initialized successfully!")
 
 def capture_frames():

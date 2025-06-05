@@ -1,33 +1,47 @@
 function setupTouchLogging(id, zoneName) {
     const area = document.getElementById(id);
-    area.addEventListener("touchmove", function (e) {
+    area.addEventListener("touchmove", event => {
         const rect = area.getBoundingClientRect();
         
-        for (let touch of e.touches) {
+        for (let touch of event.touches) {
             if (
-                touch.clientX >= rect.left &&
-                touch.clientX <= rect.right &&
-                touch.clientY >= rect.top &&
-                touch.clientY <= rect.bottom
+                between(touch.clientX, rect.left, rect.right) &&
+                between(touch.clientY, rect.top, rect.bottom)
             ) {
-                e.preventDefault();
-                const relativeX = touch.clientX - (rect.left + rect.width / 2);
-                const relativeY = touch.clientY - (rect.top + rect.height / 2);
+                event.preventDefault();
+                const relativeX = (touch.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+                const relativeY = (touch.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
 
-                fetch("/touch", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        zone: zoneName,
-                        x: relativeX,
-                        y: relativeY
-                    })
-                });
+                sendUpdate(zoneName, relativeX, relativeY);
             }
         }
     }, { passive: false });
+
+    area.addEventListener("touchend", event => {
+        const rect = area.getBoundingClientRect();
+
+        for (let touch of event.changedTouches) {
+            if (
+                between(touch.clientX, rect.left, rect.right) &&
+                between(touch.clientY, rect.top, rect.bottom)
+            ) {
+                event.preventDefault();
+                sendUpdate(zoneName);
+            }
+        }
+    }, { passive: false });
+
+    function sendUpdate(zone, x = 0, y = 0) {
+        fetch("/touch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ zone, x, y })
+        });
+    }
+
+    function between(value, min, max) {
+        return (value >= min && value <= max);
+    }
 }
 
 window.onload = () => {
