@@ -22,17 +22,17 @@ body, html {
     background-color: rgba(255, 255, 255, 0.3); /* semi-transparent */
     border: 2px solid rgba(255, 255, 255, 0.5);
     touch-action: none; /* Important for touchscreen devices */
-    border-radius: 10px;
+    border-radius: min(5vw, 5vh);
 }
 
 #left-touch {
     left: 20px;
-    width: min(50vw, 50vh);
-    height: min(50vw, 50vh);
+    width: min(40vw, 40vh);
+    height: min(40vw, 40vh);
 }
 
 #right-touch {
     right: 20px;
-    width: min(50vw, 50vh);
-    height: min(25vw, 25vh);
+    width: min(40vw, 40vh);
+    height: min(20vw, 20vh);
 }
