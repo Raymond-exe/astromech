@@ -6,7 +6,7 @@ echo "[run.sh] Checking for updates from remote repo..."
 git fetch --all
 git reset --hard origin/master
 
-if [ -p /tmp/servo_ctrl ]; then
+if [ ! -p /tmp/servo_ctrl ]; then
     echo "[run.sh] Creating FIFO pipe /tmp/servo_ctrl for servo control..."
     mkfifo /tmp/servo_ctrl
 else
