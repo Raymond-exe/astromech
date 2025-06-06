@@ -4,7 +4,7 @@ window.addEventListener('load', () => {
 
         recorder.ondataavailable = event => {
             if (event.data.size > 0) {
-                fetch("/audio-in", {
+                fetch("/mic", {
                     method: "POST",
                     headers: { "Content-Type": "application/octet-stream" },
                     body: event.data
