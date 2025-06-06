@@ -14,7 +14,6 @@ You can use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to 
     sudo apt update
     sudo apt upgrade
     ```
-    (Optional) After that's done, run `rpi-update` to grab any firmware updates for your Pi and `sudo reboot` to reboot and apply them.
 2. **Install dependencies:**  
     We'll be depending on several packages for front-end stuff, I/O, or version management, you can install separately (using `sudo apt install <package-name>`) or together using this single-line command:
     ```
@@ -79,6 +78,7 @@ Please note, **if you new to interacting with a command-line interface** or othe
 
 
 ### Driver installation
+These steps I performed inside a new `drivers` directory I made in my home folder, but however you'd like to organize these is up to you, since they'll really only be used for installation (and if you run into trouble, uninstallation).
 
 1. *(optional)* **Camera verification**  
     Verify your camera is connected to your Pi using:
@@ -96,27 +96,7 @@ Please note, **if you new to interacting with a command-line interface** or othe
                                 2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]
     ```
 
-4. Download & install gStreamer (instructions excerpt from [here](https://platypus-boats.readthedocs.io/en/latest/source/rpi/video/video-streaming-gstreamer.html#getting-gstreamer)):
-    ```
-    sudo add-apt-repository ppa:gstreamer-developers/ppa
-    sudo apt-get update
-    sudo apt-get install gstreamer1.0*
-    ```
-
-3. Install WM8960 driver (instrutions excerpt from [here](https://github.com/waveshareteam/WM8960-Audio-HAT))  
-  I cloned this repo into a new folder, but where you place it is up to you.
-    ```
-    git clone https://github.com/waveshare/WM8960-Audio-HAT
-    cd WM8960-Audio-HAT
-    sudo ./install.sh
-    sudo reboot
-    ```
-    Running `install.sh` should also install `i2c-tools`, which we can use to verify the PCA9685's connection:
-    ```
-    i2cdetect -y 1
-    ```
-    Running the i2c detection command above should show all connected I2C devices and their addresses. The PCA9685 should show up as 0x40 (default) or 0x41, etc varying depending on if the address was changed.
-  4. Install PCA9685 driver for Pi (instructions excerpt from [here](https://github.com/barulicm/PiPCA9685/blob/main/README.md))
+2. Install PCA9685 driver for Pi (instructions excerpt from [here](https://github.com/barulicm/PiPCA9685/blob/main/README.md))
       - Clone the repo
       ```
       git clone https://github.com/barulicm/PiPCA9685.git
@@ -130,3 +110,31 @@ Please note, **if you new to interacting with a command-line interface** or othe
       ```
       sudo cmake --workflow --preset install
       ```
+
+3. Install WM8960 driver (instrutions excerpt from [here](https://github.com/ubopod/WM8960-Audio-HAT))  
+    Note: *This is not the official driver from the Waveshare Team*, but a set of updated drivers for kernel 6.12 compatibility. The original driver repo is available [here](https://github.com/waveshareteam/WM8960-Audio-HAT/).
+
+    First, make sure you have the Linux Kernel Headers for your kernel version:
+    ```
+    sudo apt install linux-headers-$(uname -r)
+    ```
+    Then, follow the install instructions listed on the git README:
+    ```
+    git clone https://github.com/ubopod/WM8960-Audio-HAT
+    cd WM8960-Audio-HAT
+    sudo ./install.sh
+    sudo reboot
+    ```
+    Running `install.sh` should also install `i2c-tools`, which we can use to verify the PCA9685 servo driver board's connection:
+    ```
+    i2cdetect -y 1
+    ```
+    Running the i2c detection command above should show all connected I2C devices and their addresses. The PCA9685 should show up as 0x40 (default) or 0x41, etc varying depending on if the address was changed.
+
+
+4. Download & install gStreamer (instructions excerpt from [here](https://platypus-boats.readthedocs.io/en/latest/source/rpi/video/video-streaming-gstreamer.html#getting-gstreamer)):
+    ```
+    sudo add-apt-repository ppa:gstreamer-developers/ppa
+    sudo apt-get update
+    sudo apt-get install gstreamer1.0*
+    ```
