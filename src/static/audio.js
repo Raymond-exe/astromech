@@ -1,15 +1,17 @@
-navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+window.addEventListener('load', () => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
 
-    recorder.ondataavailable = e => {
-        if (e.data.size > 0) {
-            fetch("/mic", {
-                method: "POST",
-                headers: { "Content-Type": "application/octet-stream" },
-                body: e.data
-            });
-        }
-    };
+        recorder.ondataavailable = event => {
+            if (event.data.size > 0) {
+                fetch("/audio-in", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/octet-stream" },
+                    body: event.data
+                });
+            }
+        };
 
-    recorder.start(200);
+        recorder.start(200);
+    }).catch(err => console.error(err));
 });
