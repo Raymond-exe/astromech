@@ -113,7 +113,7 @@ These steps I performed inside a new `drivers` directory I made in my home folde
       ```
 
 3. Install WM8960 driver (instrutions excerpt from [here](https://github.com/ubopod/WM8960-Audio-HAT))  
-    Note: *This is not the official driver from the Waveshare Team*, but a set of updated drivers for kernel 6.12 compatibility. The original driver repo is available [here](https://github.com/waveshareteam/WM8960-Audio-HAT/).
+    > Note: *This is **not** the official driver from the Waveshare Team*, but a set of updated drivers for kernel 6.12 compatibility. The original driver repo is available [here](https://github.com/waveshareteam/WM8960-Audio-HAT/).
 
     First, make sure you have the Linux Kernel Headers for your kernel version:
     ```
@@ -126,6 +126,13 @@ These steps I performed inside a new `drivers` directory I made in my home folde
     sudo ./install.sh
     sudo reboot
     ```
+    After that, ensure `wm8960soundcard` shows up when running `aplay -l` and `arecord -l`.  
+    To test the microphone and speaker, you can run the following command:
+    ```
+    arecord -f cd -Dhw:0 | aplay -Dhw:0
+    ```
+    > Make sure to use the WM8960's card number found in `aplay -l` and `arecord -l` for each `-Dhw` argument above. Example: `-Dhw:99` if the WM8960 is, for some reason, `card 99: <...>`.
+
     Running `install.sh` should also install `i2c-tools`, which we can use to verify the PCA9685 servo driver board's connection:
     ```
     i2cdetect -y 1
