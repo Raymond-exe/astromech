@@ -18,7 +18,7 @@ You can use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to 
 2. **Install dependencies:**  
     We'll be depending on several packages for front-end stuff, I/O, or version management, you can install separately (using `sudo apt install <package-name>`) or together using this single-line command:
     ```
-    sudo apt install git python3-flask python3-picamera2
+    sudo apt install git python3-flask python3-picamera2 ffmpeg alsa-utils
     ```
 ### Hotspot setup:
 I've combined **several** guides on how to create a hotspot with the current Raspberry Pi OS Lite release, bookworm. These guides are:

@@ -56,6 +56,7 @@ def webpg_control():
         <div id="left-touch" class="control-area"></div>
         <div id="right-touch" class="control-area"></div>
         <script src="/static/control.js"></script>
+        <script src="/static/audio.js"></script>
     </body>
     </html>
     """
@@ -200,6 +201,40 @@ def generate_stream():
                    b'Content-Type: image/jpeg\r\n\r\n' +
                    frame_buffer + b'\r\n')
         time.sleep(0.05)
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+#         AUDIO STREAM INPUT / OUTPUT         #
+# # # # # # # # # # # # # # # # # # # # # # # #
+
+# Pi mic -> iPhone speaker
+@app.route('/audio') 
+def audio_tx():
+    def generate():
+        cmd = [ 'ffmpeg', '-f', 'alsa', '-ac', '1', '-i', 'hw:0', '-acodec', 'libopus', '-ar', '48000', '-f', 'ogg', '-' ]
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        while True:
+            data = process.stdout.read(4096)
+            if not data:
+                break
+            yield data
+
+    return Response(generate(), mimetype='audio/ogg')
+
+# iPhone mic -> Pi speaker
+@app.route('/mic', methods=['POST'])
+def audio_rx():
+    proc = subprocess.Popen(
+        ['ffmpeg', '-i', '-', '-f', 'alsa', '-ac', '1', 'hw:0'],
+        stdin=subprocess.PIPE,
+        stderr=subprocess.DEVNULL
+    )
+    proc.stdin.write(request.data)
+    proc.stdin.close()
+    proc.wait()
+    return "ok"
+
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
