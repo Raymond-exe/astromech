@@ -2,7 +2,8 @@
 
 ## Software Setup
 
-**Recommended OS:** *Raspberry Pi OS Lite (64-bit)*
+**Recommended OS:** *Raspberry Pi OS Lite (64-bit)*  
+Linux kernel version: *Linux 6.12.25+rpt-rpi-v8 #1 SMP PREEMPT Debian 1:6.12.25-1+rpt1 (2025-04-30) aarch64*
 
 You can use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to setup an SD card for this project, just make sure to select your Pi model and the 64-bit Lite OS, or another OS of your prefer.
 
