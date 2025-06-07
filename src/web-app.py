@@ -20,11 +20,11 @@ from PiPCA9685 import PCA9685
 STREAM_RESOLUTION = (720, 540)
 
 SERVO_PWM_NEUTRAL = 450
-SERVO_PWM_SCALE = 350
+SERVO_PWM_SCALE = 300
 SERVO_FREQ = 60
 
-LEFT_SERVO = 0
-RIGHT_SERVO = 1
+RIGHT_SERVO = 0
+LEFT_SERVO = 1
 HEAD_SERVO = 15
 
 ########## DO NOT TOUCH ##########
@@ -69,7 +69,7 @@ def handle_touch():
     y = data.get('y')
 
     if (zone == 'left'):
-        leftSpeed = motorTransferFunction(x, y)
+        leftSpeed = motorTransferFunction(-x, -y)
         rightSpeed = motorTransferFunction(-x, y)
         pca.set_pwm(LEFT_SERVO, 0, pwmFrom(leftSpeed))
         pca.set_pwm(RIGHT_SERVO, 0, pwmFrom(rightSpeed))

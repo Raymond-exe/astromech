@@ -19,14 +19,6 @@ body::before {
     z-index: -999;
 }
 
-/* Comment this class out to un-flip image */
-.flip-img {
-    -webkit-transform: scale(-1, -1);
-    -moz-transform: scale(-1, -1);
-    -o-transform: scale(-1, -1);
-    transform: scale(-1, -1);
-}
-
 #video-background {
     position: fixed;
     top: 50%;
@@ -34,7 +26,11 @@ body::before {
     height: 100%;
     object-fit: contain;
     z-index: -1;
-    transform: translate(-50%, -50%);
+
+    -webkit-transform: translate(-50%, -50%) rotate(180deg);
+    -moz-transform: translate(-50%, -50%) rotate(180deg);
+    -o-transform: translate(-50%, -50%) rotate(180deg);
+    transform: translate(-50%, -50%) rotate(180deg);
 }
 
 .control-area {
