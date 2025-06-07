@@ -1,6 +1,7 @@
 window.addEventListener('load', () => {
     displayMessage("Awaiting mic access...");
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        displayMessage("Mic access approved, continuing...");
         let options = { mimeType: 'audio/webm;codecs=opus' };
         if (!MediaRecorder.isTypeSupported(options.mimeType)) {
             displayMessage("mimeType not supported, falling back to default");
