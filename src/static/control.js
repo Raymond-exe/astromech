@@ -52,7 +52,7 @@ function setupTouchLogging(id, zoneName) {
     }
 }
 
-window.onload = () => {
+window.addEventListener('load', () => {
     setupTouchLogging("left-touch", "left");
     setupTouchLogging("right-touch", "right");
-};
+});
