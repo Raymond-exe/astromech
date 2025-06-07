@@ -226,7 +226,7 @@ def audio_tx():
 @app.route('/mic', methods=['POST'])
 def audio_rx():
     proc = subprocess.Popen(
-        ['ffmpeg', '-i', '-', '-f', 'alsa', '-ac', '1', 'hw:0'],
+        ['ffmpeg', '-i', '-', '-f', 'alsa', '-ac', '1', 'hw:1'],
         stdin=subprocess.PIPE,
         stderr=subprocess.DEVNULL
     )
