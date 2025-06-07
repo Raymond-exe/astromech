@@ -51,7 +51,7 @@ def webpg_control():
         <link rel="stylesheet" type="text/css" href="/static/control.css">
     </head>
     <body>
-        <img id="video-background" src="/video"/>
+        <img id="video-background" src="/video" class="flip-img"/>
 
         <div id="left-touch" class="control-area"></div>
         <div id="right-touch" class="control-area"></div>
