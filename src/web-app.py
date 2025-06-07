@@ -3,7 +3,6 @@ import io
 from picamera2 import Picamera2
 from libcamera import controls
 from PIL import Image
-import ssl
 import struct
 import subprocess
 import time
@@ -34,9 +33,6 @@ wifi_device = "wlan0"
 
 pca = PCA9685()
 pca.set_pwm_freq(SERVO_FREQ)
-
-context = ssl.SSLContext()
-context.load_cert_chain('temp/fullchain.pem', 'temp/privkey.pem')
 ##################################
 
 
@@ -246,4 +242,4 @@ def audio_rx():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80, ssl_context=context)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
