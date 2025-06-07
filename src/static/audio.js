@@ -1,33 +1,6 @@
-window.addEventListener('load', () => {
-    displayMessage("Awaiting mic access...");
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-        displayMessage("Mic access approved, continuing...");
-        let options = { mimeType: 'audio/webm;codecs=opus' };
-        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-            displayMessage("mimeType not supported, falling back to default");
-            console.warn("mimeType not supported, falling back to default");
-            options = {};
-        }
-
-        const recorder = new MediaRecorder(stream, options);
-
-        recorder.ondataavailable = event => {
-            if (event.data.size > 0) {
-                fetch("/mic", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/octet-stream" },
-                    body: event.data
-                });
-            }
-        };
-
-        recorder.start(200);
-        displayMessage("Recorder started.");
-    }).catch(err => {
-        console.error(err);
-        displayMessage(err);
-    });
-});
+function playSound(key) {
+    fetch('/play/' + key).then(r => r.text());
+}
 
 function displayMessage(message) {
     const textDiv = document.createElement("div");

@@ -1,4 +1,6 @@
-from flask import Flask, Response, request, jsonify
+from flask import Flask, Response, request, session, redirect, url_for, render_template_string, jsonify
+from dotenv import dotenv_values
+import os
 import io
 from picamera2 import Picamera2
 from libcamera import controls
@@ -8,6 +10,8 @@ import subprocess
 import time
 from threading import Thread
 from PiPCA9685 import PCA9685
+
+cwd = os.getcwd()
 
 # Modified from tutorial: https://www.raspberrypi.com/tutorials/host-a-hotel-wifi-hotspot/
 
@@ -27,6 +31,14 @@ RIGHT_SERVO = 0
 LEFT_SERVO = 1
 HEAD_SERVO = 15
 
+AUDIO_BUTTONS = {
+    "start": cwd + "/audio/startup.wav",
+    "warning": cwd + "/audio/warning.wav",
+    "chatter": cwd + "/audio/chatter.wav",
+    "ok": cwd + "/audio/ok.wav",
+    "no": cwd + "/audio/no.wav",
+}
+
 ########## DO NOT TOUCH ##########
 app = Flask(__name__)
 wifi_device = "wlan0"
@@ -43,23 +55,35 @@ pca.set_pwm_freq(SERVO_FREQ)
 
 @app.route('/control')
 def webpg_control():
-    return """
+    # Play startup sound upon connection
+    subprocess.Popen(['aplay', AUDIO_BUTTONS['start']])
+
+    # Return a simple control panel with sound buttons
+    buttons_html = "".join(
+        f'<button onclick="playSound(\'{key}\')">{key.capitalize()}</button><br><br>'
+        for key in AUDIO_BUTTONS
+    )
+
+    return render_template_string(f"""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Droid Control</title>
+        <title>Astromech Control Panel</title>
         <link rel="stylesheet" type="text/css" href="/static/control.css">
     </head>
-    <body>
+    <body style="background-color: black; color: white; text-align: center; margin-top: 20vh;">
         <img id="video-background" src="/video" class="flip-img"/>
+
+        {buttons_html}
 
         <div id="left-touch" class="control-area"></div>
         <div id="right-touch" class="control-area"></div>
+        
         <script src="/static/control.js"></script>
         <script src="/static/audio.js"></script>
     </body>
     </html>
-    """
+    """)
 
 @app.route('/touch', methods=['POST'])
 def handle_touch():
@@ -227,18 +251,20 @@ def audio_tx():
 
     return Response(generate(), mimetype='audio/ogg')
 
-# iPhone mic -> Pi speaker
-@app.route('/mic', methods=['POST'])
-def audio_rx():
-    proc = subprocess.Popen(
-        ['ffmpeg', '-i', '-', '-f', 'alsa', '-ac', '1', 'hw:1'],
-        stdin=subprocess.PIPE,
-        stderr=subprocess.DEVNULL
-    )
-    proc.stdin.write(request.data)
-    proc.stdin.close()
-    proc.wait()
-    return "ok"
+# Pi speaker output
+@app.route('/play/<key>')
+def play_audio(key):
+    if key not in AUDIO_BUTTONS:
+        return "Invalid sound", 404
+
+    path = AUDIO_BUTTONS[key]
+
+    try:
+        # Play audio with a command-line tool like aplay or mpg123
+        subprocess.Popen(['aplay', path])
+        return f"Playing: {key}"
+    except Exception as e:
+        return f"Error playing sound: {str(e)}", 500
 
 
 if __name__ == '__main__':
