@@ -101,6 +101,7 @@ def motorTransferFunction(x, y):
 @app.route('/debug', methods=['POST'])
 def debugPrint():
     print(request.data)
+    return jsonify(status="ok")
 
 
 
