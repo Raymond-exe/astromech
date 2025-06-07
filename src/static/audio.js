@@ -20,6 +20,7 @@ window.addEventListener('load', () => {
         };
 
         recorder.start(200);
+        displayMessage("Recorder started.");
     }).catch(err => {
         console.error(err);
         displayMessage(err);
@@ -43,4 +44,10 @@ function displayMessage(message) {
 
     document.body.appendChild(textDiv);
     setTimeout(() => textDiv.remove(), 5000);
+
+    fetch("/debug", {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: message
+    });
 }

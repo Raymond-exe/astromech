@@ -98,6 +98,10 @@ def motorTransferFunction(x, y):
         return -x + 1.5 * y
     return 0
 
+@app.route('/debug', methods=['POST'])
+def debugPrint():
+    print(request.data)
+
 
 
 # # # # # # # # # # # # # # # # # # # #
