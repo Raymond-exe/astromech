@@ -112,10 +112,10 @@ def webpg_wifi():
         <!DOCTYPE html>
         <html>
         <head>
-            <title>KT Wifi Control</title>
+            <title>Astromech Wifi Config</title>
         </head>
         <body>
-            <h1>Wifi Control</h1>
+            <h1>Astromech Wifi Configuration</h1>
             <form action="/submit" method="post">
                 <label for="ssid">Choose a WiFi network:</label>
                 <select name="ssid" id="ssid">

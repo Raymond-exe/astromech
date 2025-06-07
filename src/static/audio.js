@@ -1,6 +1,12 @@
 window.addEventListener('load', () => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-        const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+        let options = { mimeType: 'audio/webm;codecs=opus' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            console.warn("mimeType not supported, falling back to default");
+            options = {};
+        }
+
+        const recorder = new MediaRecorder(stream, options);
 
         recorder.ondataavailable = event => {
             if (event.data.size > 0) {

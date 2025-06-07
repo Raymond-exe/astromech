@@ -30,7 +30,7 @@ body, html {
     background-color: rgba(255, 255, 255, 0.3); /* semi-transparent */
     border: 2px solid rgba(255, 255, 255, 0.5);
     touch-action: none; /* Important for touchscreen devices */
-    border-radius: min(5vw, 5vh);
+    border-radius: min(3vw, 3vh);
 }
 
 #left-touch {
