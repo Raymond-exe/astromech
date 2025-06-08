@@ -1,11 +1,9 @@
-from flask import Flask, Response, request, session, redirect, url_for, render_template_string, jsonify
-from dotenv import dotenv_values
+from flask import Flask, Response, request, render_template_string, jsonify
 import os
 import io
 from picamera2 import Picamera2
 from libcamera import controls
 from PIL import Image
-import struct
 import subprocess
 import time
 from threading import Thread
