@@ -3,9 +3,8 @@ let audioPlayer = null;
 function startMicStream() {
     if (audioPlayer) return;
 
-    audioPlayer = new Audio("/audio");
+    audioPlayer = new Audio("http://astromech.local:8000");
     audioPlayer.autoplay = true;
-    audioPlayer.loop = true;
     audioPlayer.play()
         .then(() => console.log("Mic stream started"))
         .catch(err => console.error("Audio play error:", err));
