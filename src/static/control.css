@@ -19,8 +19,19 @@ body::before {
     z-index: -999;
 }
 
+#audio-btns {
+    display: inline;
+    position: fixed;
+    top: 3vh;
+    left: 0;
+    width: 100%;
+}
+
 button {
-    left: 5vw
+    background-color: rgba(255, 255, 255, 0.3); /* semi-transparent */
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: min(3vw, 3vh);
+    color: white;
 }
 
 #video-background {

@@ -21,7 +21,7 @@ cwd = os.getcwd()
 #         CONFIG SETTINGS         #
 # # # # # # # # # # # # # # # # # #
 
-STREAM_RESOLUTION = (720, 540)
+STREAM_RESOLUTION = (640, 480)
 
 SERVO_PWM_NEUTRAL = 450
 SERVO_PWM_SCALE = 300
@@ -73,8 +73,7 @@ def webpg_control():
     </head>
     <body style="background-color: black; color: white; text-align: center; margin-top: 20vh;">
         <img id="video-background" src="/video" class="flip-img"/>
-
-        {buttons_html}
+        <div id="audio-btns"> {buttons_html} </div>
 
         <div id="left-touch" class="control-area"></div>
         <div id="right-touch" class="control-area"></div>
