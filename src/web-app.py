@@ -8,8 +8,8 @@ import subprocess
 import time
 from threading import Thread
 from PiPCA9685 import PCA9685
-
-cwd = os.getcwd()
+from RPi import GPIO
+import atexit
 
 # Modified from tutorial: https://www.raspberrypi.com/tutorials/host-a-hotel-wifi-hotspot/
 
@@ -29,6 +29,10 @@ RIGHT_SERVO = 0
 LEFT_SERVO = 1
 HEAD_SERVO = 15
 
+LED_CONNECTION_PIN = 5
+LED_AUDIO_PIN = 13 # PWM compatible pin
+
+cwd = os.getcwd()
 AUDIO_BUTTONS = {
     "start": cwd + "/audio/startup.wav",
     "warning": cwd + "/audio/warning.wav",
@@ -45,6 +49,26 @@ pca = PCA9685()
 pca.set_pwm_freq(SERVO_FREQ)
 
 AUTHORIZED_IP = None
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED_CONNECTION_PIN, GPIO.OUT)
+GPIO.setup(LED_AUDIO_PIN, GPIO.OUT)
+
+# PWM for audio LED
+audio_pwm = GPIO.PWM(LED_AUDIO_PIN, 1000)  # 1kHz frequency
+audio_pwm.start(0)  # Start with 0% duty cycle
+
+# Function for connection LED
+def flash():
+    while(AUTHORIZED_IP is None):
+        GPIO.output(LED_CONNECTION_PIN, GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(LED_CONNECTION_PIN, GPIO.LOW)
+        time.sleep(0.5)
+    GPIO.output(LED_CONNECTION_PIN, GPIO.HIGH)
+
+flash_thread = Thread(target=flash, daemon=True)
+flash_thread.start()
 
 @app.before_request
 def check_auth():
@@ -71,7 +95,7 @@ def webpg_control():
 
     # Return a simple control panel with sound buttons
     buttons_html = "".join(
-        f'<button onclick="playSound(\'{key}\')">{key.capitalize()}</button><br><br>'
+        f'<button onclick="playSound(\'{key}\')">{key.capitalize()}</button>'
         for key in AUDIO_BUTTONS
     )
 
@@ -270,12 +294,38 @@ def play_audio(key):
     path = AUDIO_BUTTONS[key]
 
     try:
-        # Play audio with a command-line tool like aplay or mpg123
-        subprocess.Popen(['aplay', path])
+        def play_with_led():
+            # Launch SoX to get real-time amplitude stats and play audio
+            cmd = [
+                'sox', path, '-n',
+                'stat', '-freq', '25'  # 25 updates per second (40ms intervals)
+            ]
+            process = subprocess.Popen(cmd, stderr=subprocess.PIPE, text=True)
+
+            for line in process.stderr:
+                if "RMS" in line:
+                    parts = line.strip().split()
+                    try:
+                        rms_value = float(parts[-1])
+                        brightness = min(100, int(rms_value * 3000))  # scale to 0–100
+                        audio_pwm.ChangeDutyCycle(brightness)
+                    except:
+                        continue
+
+            process.wait()
+            audio_pwm.ChangeDutyCycle(0)  # Turn off LED after sound
+
+        Thread(target=play_with_led, daemon=True).start()
         return f"Playing: {key}"
     except Exception as e:
         return f"Error playing sound: {str(e)}", 500
 
+
+
+
+@atexit.register
+def cleanup():
+    GPIO.cleanup()
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
