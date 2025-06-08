@@ -45,6 +45,18 @@ wifi_device = "wlan0"
 
 pca = PCA9685()
 pca.set_pwm_freq(SERVO_FREQ)
+
+AUTHORIZED_IP = None
+
+@app.before_request
+def check_auth():
+    global AUTHORIZED_IP
+    ip = request.remote_addr
+    if AUTHORIZED_IP is None:
+        AUTHORIZED_IP = ip
+        pass
+    elif ip != AUTHORIZED_IP:
+        return "Access denied", 403
 ##################################
 
 
