@@ -56,3 +56,7 @@ window.addEventListener('load', () => {
     setupTouchLogging("left-touch", "left");
     setupTouchLogging("right-touch", "right");
 });
+
+function playSound(key) {
+    fetch('/play/' + key).then(r => r.text());
+}

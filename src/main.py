@@ -114,7 +114,6 @@ def webpg_control():
         <div id="right-touch" class="control-area"></div>
         
         <script src="/static/control.js"></script>
-        <script src="/static/audio.js"></script>
     </body>
     </html>
     """)
