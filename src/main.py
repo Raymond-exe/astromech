@@ -107,7 +107,7 @@ def webpg_control():
     </head>
     <body style="background-color: black; color: white; text-align: center; margin-top: 20vh;">
         <img id="video-background" src="/video"/>
-        {buttons_html}
+        <div id="audio-btns"> {buttons_html} </div>
         <!-- <button onclick="startMicStream()">Listen to Droid</button> -->
 
         <div id="left-touch" class="control-area"></div>
