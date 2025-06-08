@@ -55,6 +55,7 @@ button {
     border: 2px solid rgba(255, 255, 255, 0.5);
     touch-action: none; /* Important for touchscreen devices */
     border-radius: min(3vw, 3vh);
+    z-index: 100;
 }
 
 #left-touch {
