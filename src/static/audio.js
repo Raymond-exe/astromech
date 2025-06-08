@@ -3,7 +3,7 @@ let audioPlayer = null;
 function startMicStream() {
     if (audioPlayer) return;
 
-    audioPlayer = new Audio("http://astromech.local:8000");
+    audioPlayer = new Audio("astromech.local:8000");
     audioPlayer.autoplay = true;
     audioPlayer.play()
         .then(() => console.log("Mic stream started"))

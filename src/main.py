@@ -309,6 +309,7 @@ def play_audio(key):
         subprocess.Popen(['aplay', path])
     except Exception as e:
         return f"Error playing sound: {str(e)}", 500
+    return jsonify(status="ok")
 
 
 
