@@ -1,3 +1,16 @@
+let audioPlayer = null;
+
+function startMicStream() {
+    if (audioPlayer) return;
+
+    audioPlayer = new Audio("/audio");
+    audioPlayer.autoplay = true;
+    audioPlayer.loop = true;
+    audioPlayer.play()
+        .then(() => console.log("Mic stream started"))
+        .catch(err => console.error("Audio play error:", err));
+}
+
 function playSound(key) {
     fetch('/play/' + key).then(r => r.text());
 }

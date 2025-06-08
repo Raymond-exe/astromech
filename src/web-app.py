@@ -62,9 +62,9 @@ audio_pwm.start(0)  # Start with 0% duty cycle
 def flash():
     while(AUTHORIZED_IP is None):
         GPIO.output(LED_CONNECTION_PIN, GPIO.HIGH)
-        time.sleep(0.5)
+        time.sleep(0.25)
         GPIO.output(LED_CONNECTION_PIN, GPIO.LOW)
-        time.sleep(0.5)
+        time.sleep(0.25)
     GPIO.output(LED_CONNECTION_PIN, GPIO.HIGH)
 
 flash_thread = Thread(target=flash, daemon=True)
@@ -109,6 +109,7 @@ def webpg_control():
     <body style="background-color: black; color: white; text-align: center; margin-top: 20vh;">
         <img id="video-background" src="/video" class="flip-img"/>
         <div id="audio-btns"> {buttons_html} </div>
+        <button onclick="startMicStream()">Listen to Droid</button>
 
         <div id="left-touch" class="control-area"></div>
         <div id="right-touch" class="control-area"></div>
@@ -272,16 +273,19 @@ def generate_stream():
 # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Pi mic -> iPhone speaker
-@app.route('/audio') 
-def audio_tx():
+@app.route('/audio')
+def audio_stream():
     def generate():
         cmd = [ 'ffmpeg', '-f', 'alsa', '-ac', '1', '-i', 'hw:0', '-acodec', 'libopus', '-ar', '48000', '-f', 'ogg', '-' ]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-        while True:
-            data = process.stdout.read(4096)
-            if not data:
-                break
-            yield data
+        try:
+            while True:
+                data = process.stdout.read(4096)
+                if not data:
+                    break
+                yield data
+        finally:
+            process.kill()
 
     return Response(generate(), mimetype='audio/ogg')
 
