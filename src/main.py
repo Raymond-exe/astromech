@@ -306,15 +306,7 @@ def play_audio(key):
     path = AUDIO_BUTTONS[key]
 
     try:
-        def play_with_led():
-            # Launch SoX to get real-time amplitude stats and play audio
-            cmd = [
-                'sox', path, '-n',
-                'stat', '-freq', '25'  # 25 updates per second (40ms intervals)
-            ]
-
-        Thread(target=play_with_led, daemon=True).start()
-        return f"Playing: {key}"
+        subprocess.Popen(['aplay', path])
     except Exception as e:
         return f"Error playing sound: {str(e)}", 500
 
