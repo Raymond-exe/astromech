@@ -73,6 +73,8 @@ flash_thread.start()
 def check_auth():
     global AUTHORIZED_IP
     ip = request.remote_addr
+    if request.method == "POST" and request.path == "/touch":
+        return  # Allow
     if AUTHORIZED_IP is None:
         AUTHORIZED_IP = ip
         print("Client connected:", ip)
