@@ -54,6 +54,7 @@ def check_auth():
     ip = request.remote_addr
     if AUTHORIZED_IP is None:
         AUTHORIZED_IP = ip
+        print("Client connected:", ip)
         pass
     elif ip != AUTHORIZED_IP:
         return "Access denied", 403
