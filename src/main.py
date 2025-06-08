@@ -30,7 +30,7 @@ LEFT_SERVO = 1
 HEAD_SERVO = 15
 
 LED_CONNECTION_PIN = 5
-LED_AUDIO_PIN = 13 # PWM compatible pin
+LED_FRONT_PIN = 26
 
 cwd = os.getcwd()
 AUDIO_BUTTONS = {
@@ -52,11 +52,7 @@ AUTHORIZED_IP = None
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_CONNECTION_PIN, GPIO.OUT)
-GPIO.setup(LED_AUDIO_PIN, GPIO.OUT)
-
-# PWM for audio LED
-audio_pwm = GPIO.PWM(LED_AUDIO_PIN, 1000)  # 1kHz frequency
-audio_pwm.start(0)  # Start with 0% duty cycle
+GPIO.setup(LED_FRONT_PIN, GPIO.OUT)
 
 # Function for connection LED
 def flash():
@@ -276,7 +272,19 @@ def generate_stream():
 @app.route('/audio')
 def audio_stream():
     def generate():
-        cmd = [ 'ffmpeg', '-f', 'alsa', '-ac', '1', '-i', 'hw:0', '-acodec', 'libopus', '-ar', '48000', '-f', 'ogg', '-' ]
+        cmd = [ 
+            'ffmpeg',
+            '-f', 'alsa',
+            '-ac', '1',
+            '-i', 'hw:0',
+            '-acodec', 'libopus',
+            '-frame_duration', '1',
+            '-application', 'voip',
+            '-ar', '48000',
+            '-f', 'ogg',
+            '-b:a', '32k', # lower bitrate option
+            '-'
+         ]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         try:
             while True:
@@ -304,20 +312,6 @@ def play_audio(key):
                 'sox', path, '-n',
                 'stat', '-freq', '25'  # 25 updates per second (40ms intervals)
             ]
-            process = subprocess.Popen(cmd, stderr=subprocess.PIPE, text=True)
-
-            for line in process.stderr:
-                if "RMS" in line:
-                    parts = line.strip().split()
-                    try:
-                        rms_value = float(parts[-1])
-                        brightness = min(100, int(rms_value * 3000))  # scale to 0–100
-                        audio_pwm.ChangeDutyCycle(brightness)
-                    except:
-                        continue
-
-            process.wait()
-            audio_pwm.ChangeDutyCycle(0)  # Turn off LED after sound
 
         Thread(target=play_with_led, daemon=True).start()
         return f"Playing: {key}"
