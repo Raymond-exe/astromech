@@ -58,10 +58,13 @@ GPIO.setup(LED_FRONT_PIN, GPIO.OUT)
 def flash():
     while(AUTHORIZED_IP is None):
         GPIO.output(LED_CONNECTION_PIN, GPIO.HIGH)
+        GPIO.output(LED_FRONT_PIN, GPIO.HIGH)
         time.sleep(0.25)
         GPIO.output(LED_CONNECTION_PIN, GPIO.LOW)
+        GPIO.output(LED_FRONT_PIN, GPIO.LOW)
         time.sleep(0.25)
     GPIO.output(LED_CONNECTION_PIN, GPIO.HIGH)
+    GPIO.output(LED_FRONT_PIN, GPIO.HIGH)
 
 flash_thread = Thread(target=flash, daemon=True)
 flash_thread.start()
