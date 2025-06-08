@@ -9,7 +9,7 @@ git reset --hard origin/master
 echo "[run.sh] Starting audio stream"
 (
     while true; do
-        ffmpeg -f alsa -i hw:2,0 -ac 1 -f mp3 -content_type audio/mpeg -listen 1 http://localhost:8000
+        ffmpeg -f alsa -i hw:0 -ac 1 -f mp3 -content_type audio/mpeg -listen 1 http://localhost:8000
         echo "Client disconnected, restarting stream in 1s..."
         sleep 1
     done
