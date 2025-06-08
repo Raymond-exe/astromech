@@ -1,14 +1,14 @@
-let audioPlayer = null;
+// let audioPlayer = null;
 
-function startMicStream() {
-    if (audioPlayer) return;
+// function startMicStream() {
+//     if (audioPlayer) return;
 
-    audioPlayer = new Audio("astromech.local:8000");
-    audioPlayer.autoplay = true;
-    audioPlayer.play()
-        .then(() => console.log("Mic stream started"))
-        .catch(err => console.error("Audio play error:", err));
-}
+//     audioPlayer = new Audio("astromech.local:8000");
+//     audioPlayer.autoplay = true;
+//     audioPlayer.play()
+//         .then(() => console.log("Mic stream started"))
+//         .catch(err => console.error("Audio play error:", err));
+// }
 
 function playSound(key) {
     fetch('/play/' + key).then(r => r.text());
