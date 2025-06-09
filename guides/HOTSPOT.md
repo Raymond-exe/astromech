@@ -1,6 +1,6 @@
 # Hotspot setup
 
-This guide is intended to be used **without an external Wi-Fi dongle**. As long as your Raspberry Pi model has on-board Wi-Fi hardware, you should be able to use this guide to create a hotspot *without* any extra hardware.
+This guide is intended to be followed **without needing an external Wi-Fi dongle**. As long as your Raspberry Pi model has on-board Wi-Fi hardware, you should be able to use this guide to create a hotspot *without* any extra hardware.
 
 I've combined **several** guides on how to create a hotspot with the current Raspberry Pi OS Lite release, bookworm. These guides are:
 - [How can I create a Wireless Access Point while connected to wireless?](https://forums.raspberrypi.com/viewtopic.php?t=354591&sid=1b6020fedecc19f4e9029d7f0c3f6169) on the Raspberry Pi Forums, referenced for how to create the `uap0` network interface.

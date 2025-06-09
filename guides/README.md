@@ -22,7 +22,7 @@ You can use the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to 
     ```
 
 ## Setup Guide Pages
-This setup guide is split into 3 smaller pages for organization and ease of use:
+The rest of this setup guide is split into 3 smaller pages for organization and ease of use:
 1. [**HARDWARE & ASSEMBLY GUIDE**](./HARDWARE.md)
 2. [**HOTSPOT SETUP**](./HOTSPOT.md)
 3. [**SOFTWARE & DRIVER SETUP**](./SOFTWARE.md)

@@ -75,4 +75,5 @@ These steps I performed inside a new `drivers` directory I made in my home folde
     ```
     @reboot bash /home/YOUR_USERNAME/astromech/run.sh
     ```
-3. 
+    `run.sh` contains commands to automatically pull updates when connected to the internet, before continuing to start `main.py` located in the `src/` folder.
+3. Save the file and reboot the Raspberry Pi. Upon starting up, you should be able to access the webpage `https://astromech.local/control` from your mobile browser.
