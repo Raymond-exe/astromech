@@ -66,8 +66,11 @@ These steps I performed inside a new `drivers` directory I made in my home folde
 ## Codebase and auto-updates
 > **Important:** if you plan to make software customizations or other changes you want to keep, *make sure to fork this repository* before continuing. The `run.sh` file executed each time the droid boots will pull changes made to **this repository**, unless you make your own fork instead.
 
+The Astromech's software uses [Flask](https://github.com/pallets/flask) to create the webpage interfaces for mobile browsers. All client-droid interactions go through Flask, including touch inputs, the live video stream, and sound effect playback.
+
 1. Start by cloning this repository into your home folder:
     ```
+    cd ~
     git clone https://github.com/Raymond-exe/astromech.git
     ```
     > If you clone the repository into somewhere *aside* from your home folder, make sure to remember the filepath for later use in this guide.
