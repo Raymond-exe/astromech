@@ -1,7 +1,7 @@
 # Mini Audio-Video Astromech Droid
 
-<a href="https://github.com/Raymond-exe/raymond-exe.github.io/blob/master/images/astromech/closeup-1.jpg?raw=true" target="_blank">
-    <img src="https://github.com/Raymond-exe/raymond-exe.github.io/blob/master/images/astromech/closeup-1.jpg?raw=true" style="width: 25vw;">
+<a href="https://github.com/Raymond-exe/raymond-exe.github.io/blob/master/images/astromech/okipullup.gif?raw=true" target="_blank">
+    <img src="https://github.com/Raymond-exe/raymond-exe.github.io/blob/master/images/astromech/okipullup.gif?raw=true" style="width: 25vw;">
 </a>
 
 A custom Star Wars mini astromech droid, featuring realtime video and playable sound effects. Built on top of [Mr. Baddeley's BB-R2 model](https://www.printed-droid.com/kb/bb-r2/). You can view the full project breakdown and images [here](https://raymond-exe.github.io/portfolio#astromech).
